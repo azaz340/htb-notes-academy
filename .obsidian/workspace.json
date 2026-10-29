@@ -13,28 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01_Introduction_Methodology/01_Introduction_and_Penetration_Testing_Process/01_Introduction_and_Penetration_Testing_Process.md",
+                "file": "README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "01_Introduction_and_Penetration_Testing_Process"
-            }
-          }
-        ]
-      },
-      {
-        "id": "0a66a21350cf9579",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "c95ebbd09198a0dc",
-            "type": "leaf",
-            "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "title": "README"
             }
           }
         ]
@@ -115,7 +99,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "01_Introduction_Methodology/01_Introduction_and_Penetration_Testing_Process/01_Introduction_and_Penetration_Testing_Process.md",
+                "file": "README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -134,7 +118,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "01_Introduction_Methodology/01_Introduction_and_Penetration_Testing_Process/01_Introduction_and_Penetration_Testing_Process.md",
+                "file": "README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -177,7 +161,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "01_Introduction_Methodology/01_Introduction_and_Penetration_Testing_Process/01_Introduction_and_Penetration_Testing_Process.md",
+                "file": "README.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -201,46 +185,48 @@
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "bases:Create new base": false,
+      "obsidian-git:Open Git source control": false
     }
   },
   "active": "2a1a35bd3dab5214",
   "lastOpenFiles": [
-    "Pasted image 20261029191448.png",
-    "06_Reporting_and_Capstone/28_Attacking_Enterprise_Networks/28_Attacking_Enterprise_Networks.md",
-    "06_Reporting_and_Capstone/27_Documentation_and_Reporting/27_Documentation_and_Reporting.md",
+    "README.md",
     "06_Reporting_and_Capstone/28_Attacking_Enterprise_Networks",
     "06_Reporting_and_Capstone/27_Documentation_and_Reporting",
     "06_Reporting_and_Capstone",
-    "05_Post_Exploitation/26_Windows_Privilege_Escalation/26_Windows_Privilege_Escalation.md",
-    "05_Post_Exploitation/25_Linux_Privilege_Escalation/25_Linux_Privilege_Escalation.md",
     "05_Post_Exploitation/26_Windows_Privilege_Escalation",
     "05_Post_Exploitation/25_Linux_Privilege_Escalation",
     "05_Post_Exploitation",
-    "04_Web_Exploitation/24_Attacking_Common_Applications/24_Attacking_Common_Applications.md",
-    "04_Web_Exploitation/23_Web_Attacks/23_Web_Attacks.md",
-    "04_Web_Exploitation/22_Command_Injections/22_Command_Injections.md",
-    "04_Web_Exploitation/21_File_Upload_Attacks/21_File_Upload_Attacks.md",
-    "04_Web_Exploitation/20_File_Inclusion/20_File_Inclusion.md",
-    "04_Web_Exploitation/19_Cross_Site_Scripting_XSS/19_Cross_Site_Scripting_XSS.md",
-    "04_Web_Exploitation/18_SQLMap_Essentials/18_SQLMap_Essentials.md",
-    "04_Web_Exploitation/17_SQL_Injection_Fundamentals/17_SQL_Injection_Fundamentals.md",
-    "04_Web_Exploitation/16_Login_Brute_Forcing/16_Login_Brute_Forcing.md",
-    "04_Web_Exploitation/15_Attacking_Web_Applications_with_Ffuf/15_Attacking_Web_Applications_with_Ffuf.md",
-    "04_Web_Exploitation/14_Using_Web_Proxies/14_Using_Web_Proxies.md",
     "04_Web_Exploitation/24_Attacking_Common_Applications",
     "04_Web_Exploitation/23_Web_Attacks",
     "04_Web_Exploitation/22_Command_Injections",
     "04_Web_Exploitation/21_File_Upload_Attacks",
-    "03_Exploitation_and_Lateral_Movement/13_Active_Directory_Enumeration_and_Attacks/13_Active_Directory_Enumeration_and_Attacks.md",
-    "03_Exploitation_and_Lateral_Movement/12_Pivoting_Tunneling_and_Port_Forwarding/12_Pivoting_Tunneling_and_Port_Forwarding.md",
-    "03_Exploitation_and_Lateral_Movement/11_Attacking_Common_Services/11_Attacking_Common_Services.md",
-    "03_Exploitation_and_Lateral_Movement/10_Password_Attacks/10_Password_Attacks.md",
-    "02_Fundamental_Skills/09_Using_the_Metasploit_Framework/09_Using_the_Metasploit_Framework.md",
-    "02_Fundamental_Skills/08_Shells_and_Payloads/08_Shells_and_Payloads.md",
-    "02_Fundamental_Skills/07_File_Transfers/07_File_Transfers.md",
-    "02_Fundamental_Skills/06_Vulnerability_Assessment/06_Vulnerability_Assessment.md",
-    "02_Fundamental_Skills/05_Information_Gathering_Web_Edition/05_Information_Gathering_Web_Edition.md",
-    "02_Fundamental_Skills/04_Footprinting/04_Footprinting.md"
+    "github/README.md",
+    "01_Introduction_Methodology/01_Introduction_and_Penetration_Testing_Process/01_Introduction_and_Penetration_Testing_Process.md",
+    "github/06_Reporting_and_Capstone/28_Attacking_Enterprise_Networks/28_Attacking_Enterprise_Networks.md",
+    "github/06_Reporting_and_Capstone/27_Documentation_and_Reporting/27_Documentation_and_Reporting.md",
+    "github/05_Post_Exploitation/26_Windows_Privilege_Escalation/26_Windows_Privilege_Escalation.md",
+    "github/05_Post_Exploitation/25_Linux_Privilege_Escalation/25_Linux_Privilege_Escalation.md",
+    "github/04_Web_Exploitation/24_Attacking_Common_Applications/24_Attacking_Common_Applications.md",
+    "github/04_Web_Exploitation/23_Web_Attacks/23_Web_Attacks.md",
+    "github/04_Web_Exploitation/22_Command_Injections/22_Command_Injections.md",
+    "github/04_Web_Exploitation/21_File_Upload_Attacks/21_File_Upload_Attacks.md",
+    "github/04_Web_Exploitation/20_File_Inclusion/20_File_Inclusion.md",
+    "github/04_Web_Exploitation/19_Cross_Site_Scripting_XSS/19_Cross_Site_Scripting_XSS.md",
+    "github/04_Web_Exploitation/18_SQLMap_Essentials/18_SQLMap_Essentials.md",
+    "github/04_Web_Exploitation/17_SQL_Injection_Fundamentals/17_SQL_Injection_Fundamentals.md",
+    "github/04_Web_Exploitation/16_Login_Brute_Forcing/16_Login_Brute_Forcing.md",
+    "github/04_Web_Exploitation/15_Attacking_Web_Applications_with_Ffuf/15_Attacking_Web_Applications_with_Ffuf.md",
+    "github/04_Web_Exploitation/14_Using_Web_Proxies/14_Using_Web_Proxies.md",
+    "github/03_Exploitation_and_Lateral_Movement/13_Active_Directory_Enumeration_and_Attacks/13_Active_Directory_Enumeration_and_Attacks.md",
+    "github/03_Exploitation_and_Lateral_Movement/12_Pivoting_Tunneling_and_Port_Forwarding/12_Pivoting_Tunneling_and_Port_Forwarding.md",
+    "github/03_Exploitation_and_Lateral_Movement/11_Attacking_Common_Services/11_Attacking_Common_Services.md",
+    "github/03_Exploitation_and_Lateral_Movement/10_Password_Attacks/10_Password_Attacks.md",
+    "github/02_Fundamental_Skills/09_Using_the_Metasploit_Framework/09_Using_the_Metasploit_Framework.md",
+    "github/02_Fundamental_Skills/08_Shells_and_Payloads/08_Shells_and_Payloads.md",
+    "github/02_Fundamental_Skills/07_File_Transfers/07_File_Transfers.md",
+    "github/02_Fundamental_Skills/06_Vulnerability_Assessment/06_Vulnerability_Assessment.md",
+    "Pasted image 20261029191448.png"
   ]
 }

@@ -616,6 +616,401 @@ The last TCP packet that we sent confirms the receipt of the data with an `ACK`.
 |---|---|---|
 |5.|`[ACK]`|`18:28:07.319426 IP 10.10.14.2.59618 > 10.129.2.28.smtp: Flags [.], <SNIP>`|
 
+# Nmap Scripting Engine
+
+---
+
+Nmap Scripting Engine (`NSE`) is another handy feature of `Nmap`. It provides us with the possibility to create scripts in Lua for interaction with certain services. There are a total of 14 categories into which these scripts can be divided:
+
+|**Category**|**Description**|
+|---|---|
+|`auth`|Determination of authentication credentials.|
+|`broadcast`|Scripts, which are used for host discovery by broadcasting and the discovered hosts, can be automatically added to the remaining scans.|
+|`brute`|Executes scripts that try to log in to the respective service by brute-forcing with credentials.|
+|`default`|Default scripts executed by using the `-sC` option.|
+|`discovery`|Evaluation of accessible services.|
+|`dos`|These scripts are used to check services for denial of service vulnerabilities and are used less as it harms the services.|
+|`exploit`|This category of scripts tries to exploit known vulnerabilities for the scanned port.|
+|`external`|Scripts that use external services for further processing.|
+|`fuzzer`|This uses scripts to identify vulnerabilities and unexpected packet handling by sending different fields, which can take much time.|
+|`intrusive`|Intrusive scripts that could negatively affect the target system.|
+|`malware`|Checks if some malware infects the target system.|
+|`safe`|Defensive scripts that do not perform intrusive and destructive access.|
+|`version`|Extension for service detection.|
+|`vuln`|Identification of specific vulnerabilities.|
+
+We have several ways to define the desired scripts in `Nmap`.
+
+#### Default Scripts
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap <target> -sC`
+
+#### Specific Scripts Category
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap <target> --script <category>`
+
+#### Defined Scripts
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap <target> --script <script-name>,<script-name>,...`
+
+For example, let us keep working with the target SMTP port and see the results we get with two defined scripts.
+
+#### Nmap - Specifying Scripts
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.28 -p 25 --script banner,smtp-commands Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-16 23:21 CEST Nmap scan report for 10.129.2.28 Host is up (0.050s latency). PORT   STATE SERVICE 25/tcp open  smtp |_banner: 220 inlane ESMTP Postfix (Ubuntu) |_smtp-commands: inlane, PIPELINING, SIZE 10240000, VRFY, ETRN, STARTTLS, ENHANCEDSTATUSCODES, 8BITMIME, DSN, SMTPUTF8, MAC Address: DE:AD:00:00:BE:EF (Intel Corporate)`
+
+|**Scanning Options**|**Description**|
+|---|---|
+|`10.129.2.28`|Scans the specified target.|
+|`-p 25`|Scans only the specified port.|
+|`--script banner,smtp-commands`|Uses specified NSE scripts.|
+
+We see that we can recognize the **Ubuntu** distribution of Linux by using the' banner' script. The `smtp-commands` script shows us which commands we can use by interacting with the target SMTP server. In this example, such information may help us to find out existing users on the target. `Nmap` also gives us the ability to scan our target with the aggressive option (`-A`). This scans the target with multiple options as service detection (`-sV`), OS detection (`-O`), traceroute (`--traceroute`), and with the default NSE scripts (`-sC`).
+
+#### Nmap - Aggressive Scan
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.28 -p 80 -A Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-17 01:38 CEST Nmap scan report for 10.129.2.28 Host is up (0.012s latency). PORT   STATE SERVICE VERSION 80/tcp open  http    Apache httpd 2.4.29 ((Ubuntu)) |_http-generator: WordPress 5.3.4 |_http-server-header: Apache/2.4.29 (Ubuntu) |_http-title: blog.inlanefreight.com MAC Address: DE:AD:00:00:BE:EF (Intel Corporate) Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port Aggressive OS guesses: Linux 2.6.32 (96%), Linux 3.2 - 4.9 (96%), Linux 2.6.32 - 3.10 (96%), Linux 3.4 - 3.10 (95%), Linux 3.1 (95%), Linux 3.2 (95%),  AXIS 210A or 211 Network Camera (Linux 2.6.17) (94%), Synology DiskStation Manager 5.2-5644 (94%), Netgear RAIDiator 4.2.28 (94%),  Linux 2.6.32 - 2.6.35 (94%) No exact OS matches for host (test conditions non-ideal). Network Distance: 1 hop TRACEROUTE HOP RTT      ADDRESS 1   11.91 ms 10.129.2.28 OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . Nmap done: 1 IP address (1 host up) scanned in 11.36 seconds`
+
+|**Scanning Options**|**Description**|
+|---|---|
+|`10.129.2.28`|Scans the specified target.|
+|`-p 80`|Scans only the specified port.|
+|`-A`|Performs service detection, OS detection, traceroute and uses defaults scripts to scan the target.|
+
+With the help of the used scan option (`-A`), we found out what kind of web server (`Apache 2.4.29`) is running on the system, which web application (`WordPress 5.3.4`) is used, and the title (`blog.inlanefreight.com`) of the web page. Also, `Nmap` shows that it is likely to be `Linux` (`96%`) operating system.
+
+---
+
+## Vulnerability Assessment
+
+Now let us move on to HTTP port 80 and see what information and vulnerabilities we can find using the `vuln` category from `NSE`.
+
+#### Nmap - Vuln Category
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.28 -p 80 -sV --script vuln  Nmap scan report for 10.129.2.28 Host is up (0.036s latency). PORT   STATE SERVICE VERSION 80/tcp open  http    Apache httpd 2.4.29 ((Ubuntu)) | http-enum: |   /wp-login.php: Possible admin folder |   /readme.html: Wordpress version: 2 |   /: WordPress version: 5.3.4 |   /wp-includes/images/rss.png: Wordpress version 2.2 found. |   /wp-includes/js/jquery/suggest.js: Wordpress version 2.5 found. |   /wp-includes/images/blank.gif: Wordpress version 2.6 found. |   /wp-includes/js/comment-reply.js: Wordpress version 2.7 found. |   /wp-login.php: Wordpress login page. |   /wp-admin/upgrade.php: Wordpress login page. |_  /readme.html: Interesting, a readme. |_http-server-header: Apache/2.4.29 (Ubuntu) |_http-stored-xss: Couldn't find any stored XSS vulnerabilities. | http-wordpress-users: | Username found: admin |_Search stopped at ID #25. Increase the upper limit if necessary with 'http-wordpress-users.limit' | vulners: |   cpe:/a:apache:http_server:2.4.29: |       CVE-2019-0211   7.2 https://vulners.com/cve/CVE-2019-0211 |       CVE-2018-1312   6.8 https://vulners.com/cve/CVE-2018-1312 |       CVE-2017-15715  6.8 https://vulners.com/cve/CVE-2017-15715 <SNIP>`
+
+|**Scanning Options**|**Description**|
+|---|---|
+|`10.129.2.28`|Scans the specified target.|
+|`-p 80`|Scans only the specified port.|
+|`-sV`|Performs service version detection on specified ports.|
+|`--script vuln`|Uses all related scripts from specified category.|
+
+The scripts used for the last scan interact with the webserver and its web application to find out more information about their versions and check various databases to see if there are known vulnerabilities. More information about NSE scripts and the corresponding categories we can find at: [https://nmap.org/nsedoc/index.html](https://nmap.org/nsedoc/index.html)
+
+
+# Performance
+
+---
+
+Scanning performance plays a significant role when we need to scan an extensive network or are dealing with low network bandwidth. We can use various options to tell `Nmap` how fast (`-T <0-5>`), with which frequency (`--min-parallelism <number>`), which timeouts (`--max-rtt-timeout <time>`) the test packets should have, how many packets should be sent simultaneously (`--min-rate <number>`), and with the number of retries (`--max-retries <number>`) for the scanned ports the targets should be scanned.
+
+---
+
+## Timeouts
+
+When Nmap sends a packet, it takes some time (`Round-Trip-Time` - `RTT`) to receive a response from the scanned port. Generally, `Nmap` starts with a high timeout (`--min-RTT-timeout`) of 100ms. Let us look at an example by scanning the whole network with 256 hosts, including the top 100 ports.
+
+#### Default Scan
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.0/24 -F <SNIP> Nmap done: 256 IP addresses (10 hosts up) scanned in 39.44 seconds`
+
+#### Optimized RTT
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.0/24 -F --initial-rtt-timeout 50ms --max-rtt-timeout 100ms <SNIP> Nmap done: 256 IP addresses (8 hosts up) scanned in 12.29 seconds`
+
+|**Scanning Options**|**Description**|
+|---|---|
+|`10.129.2.0/24`|Scans the specified target network.|
+|`-F`|Scans top 100 ports.|
+|`--initial-rtt-timeout 50ms`|Sets the specified time value as initial RTT timeout.|
+|`--max-rtt-timeout 100ms`|Sets the specified time value as maximum RTT timeout.|
+
+When comparing the two scans, we can see that we found two hosts less with the optimized scan, but the scan took only a quarter of the time. From this, we can conclude that setting the initial RTT timeout (`--initial-rtt-timeout`) to too short a time period may cause us to overlook hosts.
+
+---
+
+## Max Retries
+
+Another way to increase scan speed is by specifying the retry rate of sent packets (`--max-retries`). The default value is `10`, but we can reduce it to `0`. This means if Nmap does not receive a response for a port, it won't send any more packets to that port and will skip it.
+
+#### Default Scan
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.0/24 -F | grep "/tcp" | wc -l 23`
+
+#### Reduced Retries
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.0/24 -F --max-retries 0 | grep "/tcp" | wc -l 21`
+
+|**Scanning Options**|**Description**|
+|---|---|
+|`10.129.2.0/24`|Scans the specified target network.|
+|`-F`|Scans top 100 ports.|
+|`--max-retries 0`|Sets the number of retries that will be performed during the scan.|
+
+Again, we recognize that accelerating can also have a negative effect on our results, which means we can overlook important information.
+
+---
+
+## Rates
+
+During a white-box penetration test, we may get whitelisted for the security systems to check the systems in the network for vulnerabilities and not only test the protection measures. If we know the network bandwidth, we can work with the rate of packets sent, which significantly speeds up our scans with `Nmap`. When setting the minimum rate (`--min-rate <number>`) for sending packets, we tell `Nmap` to simultaneously send the specified number of packets. It will attempt to maintain the rate accordingly.
+
+#### Default Scan
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.0/24 -F -oN tnet.default <SNIP> Nmap done: 256 IP addresses (10 hosts up) scanned in 29.83 seconds`
+
+#### Optimized Scan
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.0/24 -F -oN tnet.minrate300 --min-rate 300 <SNIP> Nmap done: 256 IP addresses (10 hosts up) scanned in 8.67 seconds`
+
+|**Scanning Options**|**Description**|
+|---|---|
+|`10.129.2.0/24`|Scans the specified target network.|
+|`-F`|Scans top 100 ports.|
+|`-oN tnet.minrate300`|Saves the results in normal formats, starting the specified file name.|
+|`--min-rate 300`|Sets the minimum number of packets to be sent per second.|
+
+---
+
+#### Default Scan - Found Open Ports
+
+        shellsession
+`azaz34@htb[/htb]$ cat tnet.default | grep "/tcp" | wc -l 23`
+
+#### Optimized Scan - Found Open Ports
+
+        shellsession
+`azaz34@htb[/htb]$ cat tnet.minrate300 | grep "/tcp" | wc -l 23`
+
+---
+
+## Timing
+
+Because such settings cannot always be optimized manually, as in a black-box penetration test, `Nmap` offers six different timing templates (`-T <0-5>`) for us to use. These values (`0-5`) determine the aggressiveness of our scans. This can also have negative effects if the scan is too aggressive, and security systems may block us due to the produced network traffic. The default timing template used when we have defined nothing else is the normal (`-T 3`).
+
+- `-T 0` / `-T paranoid`
+- `-T 1` / `-T sneaky`
+- `-T 2` / `-T polite`
+- `-T 3` / `-T normal`
+- `-T 4` / `-T aggressive`
+- `-T 5` / `-T insane`
+
+These templates contain options that we can also set manually, and have seen some of them already. The developers determined the values set for these templates according to their best results, making it easier for us to adapt our scans to the corresponding network environment. The exact used options with their values we can find here: [https://nmap.org/book/performance-timing-templates.html](https://nmap.org/book/performance-timing-templates.html)
+
+#### Default Scan
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.0/24 -F -oN tnet.default  <SNIP> Nmap done: 256 IP addresses (10 hosts up) scanned in 32.44 seconds`
+
+#### Insane Scan
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.0/24 -F -oN tnet.T5 -T 5 <SNIP> Nmap done: 256 IP addresses (10 hosts up) scanned in 18.07 seconds`
+
+|**Scanning Options**|**Description**|
+|---|---|
+|`10.129.2.0/24`|Scans the specified target network.|
+|`-F`|Scans top 100 ports.|
+|`-oN tnet.T5`|Saves the results in normal formats, starting the specified file name.|
+|`-T 5`|Specifies the insane timing template.|
+
+---
+
+#### Default Scan - Found Open Ports
+
+        shellsession
+`azaz34@htb[/htb]$ cat tnet.default | grep "/tcp" | wc -l 23`
+
+#### Insane Scan - Found Open Ports
+
+        shellsession
+`azaz34@htb[/htb]$ cat tnet.T5 | grep "/tcp" | wc -l 23`
+
+---
+
+More information about scan performance we can find at [https://nmap.org/book/man-performance.html](https://nmap.org/book/man-performance.html)
+
+# Firewall and IDS/IPS Evasion
+
+---
+
+`Nmap` gives us many different ways to bypass firewalls rules and IDS/IPS. These methods include the fragmentation of packets, the use of decoys, and others that we will discuss in this section.
+
+---
+
+## Firewalls
+
+A firewall is a security measure against unauthorized connection attempts from external networks. Every firewall security system is based on software and/or hardware components that monitor network traffic as it passes through the firewall and decide how to handle the connection based on the rules that have been set. It checks whether individual network packets are being passed, dropped, or blocked. This mechanism is designed to prevent unwanted connections that could be potentially dangerous.
+
+---
+
+## IDS/IPS
+
+Like the firewall, the intrusion detection system (`IDS`) and intrusion prevention system (`IPS`) are also software-based components. `IDS` scans the network for potential attacks, analyzes them, and reports any detected attacks. `IPS` complements `IDS` by taking specific defensive measures if a potential attack should have been detected. The analysis of such attacks is based on pattern matching and signatures. If specific patterns are detected, such as a service detection scan, `IPS` may prevent the pending connection attempts.
+
+---
+
+#### Determine Firewalls and Their Rules
+
+We already know that when a port is shown as filtered, it can have several reasons. In most cases, firewalls have certain rules set to handle specific connections. The packets can either be `dropped`, or `rejected`. The `dropped` packets are ignored, and no response is returned from the host.
+
+This is different for rejected packets, which elicit an explicit response. TCP packets are returned with an RST flag, while ICMP can contain different types of error codes.
+
+Such errors include:
+
+- Net Unreachable
+- Net Prohibited
+- Host Unreachable
+- Host Prohibited
+- Port Unreachable
+- Proto Unreachable
+
+Nmap's TCP ACK scan (`-sA`) method is much harder to filter for firewalls and IDS/IPS systems than regular SYN (`-sS`) or Connect scans (`sT`) because they only send a TCP packet with only the `ACK` flag. When a port is closed or open, the host must respond with an `RST` flag. Unlike outgoing connections, all connection attempts (with the `SYN` flag) from external networks are usually blocked by firewalls. However, the packets with the `ACK` flag are often passed by the firewall because the firewall cannot determine whether the connection was first established from the external network or the internal network.
+
+If we look at these scans, we will see how the results differ.
+
+#### SYN-Scan
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.28 -p 21,22,25 -sS -Pn -n --disable-arp-ping --packet-trace Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-21 14:56 CEST SENT (0.0278s) TCP 10.10.14.2:57347 > 10.129.2.28:22 S ttl=53 id=22412 iplen=44  seq=4092255222 win=1024 <mss 1460> SENT (0.0278s) TCP 10.10.14.2:57347 > 10.129.2.28:25 S ttl=50 id=62291 iplen=44  seq=4092255222 win=1024 <mss 1460> SENT (0.0278s) TCP 10.10.14.2:57347 > 10.129.2.28:21 S ttl=58 id=38696 iplen=44  seq=4092255222 win=1024 <mss 1460> RCVD (0.0329s) ICMP [10.129.2.28 > 10.10.14.2 Port 21 unreachable (type=3/code=3) ] IP [ttl=64 id=40884 iplen=72 ] RCVD (0.0341s) TCP 10.129.2.28:22 > 10.10.14.2:57347 SA ttl=64 id=0 iplen=44  seq=1153454414 win=64240 <mss 1460> RCVD (1.0386s) TCP 10.129.2.28:22 > 10.10.14.2:57347 SA ttl=64 id=0 iplen=44  seq=1153454414 win=64240 <mss 1460> SENT (1.1366s) TCP 10.10.14.2:57348 > 10.129.2.28:25 S ttl=44 id=6796 iplen=44  seq=4092320759 win=1024 <mss 1460> Nmap scan report for 10.129.2.28 Host is up (0.0053s latency). PORT   STATE    SERVICE 21/tcp filtered ftp 22/tcp open     ssh 25/tcp filtered smtp MAC Address: DE:AD:00:00:BE:EF (Intel Corporate) Nmap done: 1 IP address (1 host up) scanned in 0.07 seconds`
+
+#### ACK-Scan
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.28 -p 21,22,25 -sA -Pn -n --disable-arp-ping --packet-trace Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-21 14:57 CEST SENT (0.0422s) TCP 10.10.14.2:49343 > 10.129.2.28:21 A ttl=49 id=12381 iplen=40  seq=0 win=1024 SENT (0.0423s) TCP 10.10.14.2:49343 > 10.129.2.28:22 A ttl=41 id=5146 iplen=40  seq=0 win=1024 SENT (0.0423s) TCP 10.10.14.2:49343 > 10.129.2.28:25 A ttl=49 id=5800 iplen=40  seq=0 win=1024 RCVD (0.1252s) ICMP [10.129.2.28 > 10.10.14.2 Port 21 unreachable (type=3/code=3) ] IP [ttl=64 id=55628 iplen=68 ] RCVD (0.1268s) TCP 10.129.2.28:22 > 10.10.14.2:49343 R ttl=64 id=0 iplen=40  seq=1660784500 win=0 SENT (1.3837s) TCP 10.10.14.2:49344 > 10.129.2.28:25 A ttl=59 id=21915 iplen=40  seq=0 win=1024 Nmap scan report for 10.129.2.28 Host is up (0.083s latency). PORT   STATE      SERVICE 21/tcp filtered   ftp 22/tcp unfiltered ssh 25/tcp filtered   smtp MAC Address: DE:AD:00:00:BE:EF (Intel Corporate) Nmap done: 1 IP address (1 host up) scanned in 0.15 seconds`
+
+|**Scanning Options**|**Description**|
+|---|---|
+|`10.129.2.28`|Scans the specified target.|
+|`-p 21,22,25`|Scans only the specified ports.|
+|`-sS`|Performs SYN scan on specified ports.|
+|`-sA`|Performs ACK scan on specified ports.|
+|`-Pn`|Disables ICMP Echo requests.|
+|`-n`|Disables DNS resolution.|
+|`--disable-arp-ping`|Disables ARP ping.|
+|`--packet-trace`|Shows all packets sent and received.|
+
+Please pay attention to the RCVD packets and its set flag we receive from our target. With the SYN scan (`-sS`) our target tries to establish the TCP connection by sending a packet back with the SYN-ACK (`SA`) flags set and with the ACK scan (`-sA`) we get the `RST` flag because TCP port 22 is open. For the TCP port 25, we do not receive any packets back, which indicates that the packets will be dropped.
+
+---
+
+## Detect IDS/IPS
+
+Unlike firewalls and their rules, the detection of IDS/IPS systems is much more difficult because these are passive traffic monitoring systems. `IDS systems` examine all connections between hosts. If the IDS finds packets containing the defined contents or specifications, the administrator is notified and takes appropriate action in the worst case.
+
+`IPS systems` take measures configured by the administrator independently to prevent potential attacks automatically. It is essential to know that IDS and IPS are different applications and that IPS serves as a complement to IDS.
+
+Several virtual private servers (`VPS`) with different IP addresses are recommended to determine whether such systems are on the target network during a penetration test. If the administrator detects such a potential attack on the target network, the first step is to block the IP address from which the potential attack comes. As a result, we will no longer be able to access the network using that IP address, and our Internet Service Provider (`ISP`) will be contacted and blocked from all access to the Internet.
+
+- `IDS systems` alone are usually there to help administrators detect potential attacks on their network. They can then decide how to handle such connections. We can trigger certain security measures from an administrator, for example, by aggressively scanning a single port and its service. Based on whether specific security measures are taken, we can detect if the network has some monitoring applications or not.
+- One method to determine whether such `IPS system` is present in the target network is to scan from a single host (`VPS`). If at any time this host is blocked and has no access to the target network, we know that the administrator has taken some security measures. Accordingly, we can continue our penetration test with another `VPS`.
+
+Consequently, we know that we need to be quieter with our scans and, in the best case, disguise all interactions with the target network and its services.
+
+---
+
+## Decoys
+
+There are cases in which administrators block specific subnets from different regions in principle. This prevents any access to the target network. Another example is when IPS should block us. For this reason, the Decoy scanning method (`-D`) is the right choice. With this method, Nmap generates various random IP addresses inserted into the IP header to disguise the origin of the packet sent. With this method, we can generate random (`RND`) a specific number (for example: `5`) of IP addresses separated by a colon (`:`). Our real IP address is then randomly placed between the generated IP addresses. In the next example, our real IP address is therefore placed in the second position. Another critical point is that the decoys must be alive. Otherwise, the service on the target may be unreachable due to SYN-flooding security mechanisms.
+
+#### Scan by Using Decoys
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.28 -p 80 -sS -Pn -n --disable-arp-ping --packet-trace -D RND:5 Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-21 16:14 CEST SENT (0.0378s) TCP 102.52.161.59:59289 > 10.129.2.28:80 S ttl=42 id=29822 iplen=44  seq=3687542010 win=1024 <mss 1460> SENT (0.0378s) TCP 10.10.14.2:59289 > 10.129.2.28:80 S ttl=59 id=29822 iplen=44  seq=3687542010 win=1024 <mss 1460> SENT (0.0379s) TCP 210.120.38.29:59289 > 10.129.2.28:80 S ttl=37 id=29822 iplen=44  seq=3687542010 win=1024 <mss 1460> SENT (0.0379s) TCP 191.6.64.171:59289 > 10.129.2.28:80 S ttl=38 id=29822 iplen=44  seq=3687542010 win=1024 <mss 1460> SENT (0.0379s) TCP 184.178.194.209:59289 > 10.129.2.28:80 S ttl=39 id=29822 iplen=44  seq=3687542010 win=1024 <mss 1460> SENT (0.0379s) TCP 43.21.121.33:59289 > 10.129.2.28:80 S ttl=55 id=29822 iplen=44  seq=3687542010 win=1024 <mss 1460> RCVD (0.1370s) TCP 10.129.2.28:80 > 10.10.14.2:59289 SA ttl=64 id=0 iplen=44  seq=4056111701 win=64240 <mss 1460> Nmap scan report for 10.129.2.28 Host is up (0.099s latency). PORT   STATE SERVICE 80/tcp open  http MAC Address: DE:AD:00:00:BE:EF (Intel Corporate) Nmap done: 1 IP address (1 host up) scanned in 0.15 seconds`
+
+|**Scanning Options**|**Description**|
+|---|---|
+|`10.129.2.28`|Scans the specified target.|
+|`-p 80`|Scans only the specified ports.|
+|`-sS`|Performs SYN scan on specified ports.|
+|`-Pn`|Disables ICMP Echo requests.|
+|`-n`|Disables DNS resolution.|
+|`--disable-arp-ping`|Disables ARP ping.|
+|`--packet-trace`|Shows all packets sent and received.|
+|`-D RND:5`|Generates five random IP addresses that indicates the source IP the connection comes from.|
+
+The spoofed packets are often filtered out by ISPs and routers, even though they come from the same network range. Therefore, we can also specify our VPS servers' IP addresses and use them in combination with "`IP ID`" manipulation in the IP headers to scan the target.
+
+Another scenario would be that only individual subnets would not have access to the server's specific services. So we can also manually specify the source IP address (`-S`) to test if we get better results with this one. Decoys can be used for SYN, ACK, ICMP scans, and OS detection scans. So let us look at such an example and determine which operating system it is most likely to be.
+
+#### Testing Firewall Rule
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.28 -n -Pn -p445 -O Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-22 01:23 CEST Nmap scan report for 10.129.2.28 Host is up (0.032s latency). PORT    STATE    SERVICE 445/tcp filtered microsoft-ds MAC Address: DE:AD:00:00:BE:EF (Intel Corporate) Too many fingerprints match this host to give specific OS details Network Distance: 1 hop OS detection performed. Please report any incorrect results at https://nmap.org/submit/ . Nmap done: 1 IP address (1 host up) scanned in 3.14 seconds`
+
+#### Scan by Using Different Source IP
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.28 -n -Pn -p 445 -O -S 10.129.2.200 -e tun0 Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-22 01:16 CEST Nmap scan report for 10.129.2.28 Host is up (0.010s latency). PORT    STATE SERVICE 445/tcp open  microsoft-ds MAC Address: DE:AD:00:00:BE:EF (Intel Corporate) Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port Aggressive OS guesses: Linux 2.6.32 (96%), Linux 3.2 - 4.9 (96%), Linux 2.6.32 - 3.10 (96%), Linux 3.4 - 3.10 (95%), Linux 3.1 (95%), Linux 3.2 (95%), AXIS 210A or 211 Network Camera (Linux 2.6.17) (94%), Synology DiskStation Manager 5.2-5644 (94%), Linux 2.6.32 - 2.6.35 (94%), Linux 2.6.32 - 3.5 (94%) No exact OS matches for host (test conditions non-ideal). Network Distance: 1 hop OS detection performed. Please report any incorrect results at https://nmap.org/submit/ . Nmap done: 1 IP address (1 host up) scanned in 4.11 seconds`
+
+|**Scanning Options**|**Description**|
+|---|---|
+|`10.129.2.28`|Scans the specified target.|
+|`-n`|Disables DNS resolution.|
+|`-Pn`|Disables ICMP Echo requests.|
+|`-p 445`|Scans only the specified ports.|
+|`-O`|Performs operation system detection scan.|
+|`-S`|Scans the target by using different source IP address.|
+|`10.129.2.200`|Specifies the source IP address.|
+|`-e tun0`|Sends all requests through the specified interface.|
+
+---
+
+## DNS Proxying
+
+By default, `Nmap` performs a reverse DNS resolution unless otherwise specified to find more important information about our target. These DNS queries are also passed in most cases because the given web server is supposed to be found and visited. The DNS queries are made over the `UDP port 53`. The `TCP port 53` was previously only used for the so-called "`Zone transfers`" between the DNS servers or data transfer larger than 512 bytes. More and more, this is changing due to IPv6 and DNSSEC expansions. These changes cause many DNS requests to be made via TCP port 53.
+
+However, `Nmap` still gives us a way to specify DNS servers ourselves (`--dns-server <ns>,<ns>`). This method could be fundamental to us if we are in a demilitarized zone (`DMZ`). The company's DNS servers are usually more trusted than those from the Internet. So, for example, we could use them to interact with the hosts of the internal network. As another example, we can use `TCP port 53` as a source port (`--source-port`) for our scans. If the administrator uses the firewall to control this port and does not filter IDS/IPS properly, our TCP packets will be trusted and passed through.
+
+#### SYN-Scan of a Filtered Port
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.28 -p50000 -sS -Pn -n --disable-arp-ping --packet-trace Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-21 22:50 CEST SENT (0.0417s) TCP 10.10.14.2:33436 > 10.129.2.28:50000 S ttl=41 id=21939 iplen=44  seq=736533153 win=1024 <mss 1460> SENT (1.0481s) TCP 10.10.14.2:33437 > 10.129.2.28:50000 S ttl=46 id=6446 iplen=44  seq=736598688 win=1024 <mss 1460> Nmap scan report for 10.129.2.28 Host is up. PORT      STATE    SERVICE 50000/tcp filtered ibm-db2 Nmap done: 1 IP address (1 host up) scanned in 2.06 seconds`
+
+#### SYN-Scan From DNS Port
+
+        shellsession
+`azaz34@htb[/htb]$ sudo nmap 10.129.2.28 -p50000 -sS -Pn -n --disable-arp-ping --packet-trace --source-port 53 SENT (0.0482s) TCP 10.10.14.2:53 > 10.129.2.28:50000 S ttl=58 id=27470 iplen=44  seq=4003923435 win=1024 <mss 1460> RCVD (0.0608s) TCP 10.129.2.28:50000 > 10.10.14.2:53 SA ttl=64 id=0 iplen=44  seq=540635485 win=64240 <mss 1460> Nmap scan report for 10.129.2.28 Host is up (0.013s latency). PORT      STATE SERVICE 50000/tcp open  ibm-db2 MAC Address: DE:AD:00:00:BE:EF (Intel Corporate) Nmap done: 1 IP address (1 host up) scanned in 0.08 seconds`
+
+|**Scanning Options**|**Description**|
+|---|---|
+|`10.129.2.28`|Scans the specified target.|
+|`-p 50000`|Scans only the specified ports.|
+|`-sS`|Performs SYN scan on specified ports.|
+|`-Pn`|Disables ICMP Echo requests.|
+|`-n`|Disables DNS resolution.|
+|`--disable-arp-ping`|Disables ARP ping.|
+|`--packet-trace`|Shows all packets sent and received.|
+|`--source-port 53`|Performs the scans from specified source port.|
+
+---
+
+Now that we have found out that the firewall accepts `TCP port 53`, it is very likely that IDS/IPS filters might also be configured much weaker than others. We can test this by trying to connect to this port by using `Netcat`.
+
+#### Connect To The Filtered Port
+
+        shellsession
+`azaz34@htb[/htb]$ ncat -nv --source-port 53 10.129.2.28 50000 Ncat: Version 7.80 ( https://nmap.org/ncat ) Ncat: Connected to 10.129.2.28:50000. 220 ProFTPd`
+
+---
+
+## Firewall and IDS/IPS Evasion Labs
+
+In the next three sections, we get different scenarios to practice where we have to scan our target. Firewall rules and IDS/IPS protect the systems, so we need to use the techniques shown to bypass the firewall rules and do this as quiet as possible. Otherwise, we will be blocked by IPS.
+
 
 
 

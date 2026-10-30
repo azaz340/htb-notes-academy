@@ -427,6 +427,3 @@ nmap -oA results <target>
 - Manual enumeration pozwala znaleźć informacje pominięte przez automatyczne narzędzia.
     
 
-## Materiał źródłowy
-
-HTB Academy — Enumeration / Introduction to Nmap / Nmap Scripting Engine / Performance / Firewall and IDS/IPS Evasion.

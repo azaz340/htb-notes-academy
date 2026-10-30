@@ -427,3 +427,4 @@ nmap -oA results <target>
 - Manual enumeration pozwala znaleźć informacje pominięte przez automatyczne narzędzia.
     
 
+a

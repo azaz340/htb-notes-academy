@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "htb academy/cpts/02_Fundamental_Skills/03_Network_Enumeration_with_Nmap/03_Network_Enumeration_with_Nmap.md",
+                "file": "htb academy/cpts/02_Fundamental_Skills/04_Footprinting/04_Footprinting.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "03_Network_Enumeration_with_Nmap"
+              "title": "04_Footprinting"
             }
           }
         ]
@@ -191,9 +191,9 @@
   },
   "active": "2a1a35bd3dab5214",
   "lastOpenFiles": [
+    "htb academy/cpts/02_Fundamental_Skills/03_Network_Enumeration_with_Nmap/03_Network_Enumeration_with_Nmap.md",
     "htb academy/cpts/01_Introduction_Methodology/02_Getting_Started_Recon_Enumeration_Attack_Planning/02_Getting_Started_Recon_Enumeration_Attack_Planning.md",
     "htb academy/cpts/01_Introduction_Methodology/01_Introduction_and_Penetration_Testing_Process/01_Introduction_and_Penetration_Testing_Process.md",
-    "htb academy/cpts/02_Fundamental_Skills/03_Network_Enumeration_with_Nmap/03_Network_Enumeration_with_Nmap.md",
     "labs",
     "01_Introduction_Methodology/01_Introduction_and_Penetration_Testing_Process/01_Introduction_and_Penetration_Testing_Process.md",
     "htb academy/cpts/README.md",
